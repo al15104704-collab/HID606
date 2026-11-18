@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { HeroScene } from './components/QuantumScene';
 import {
   NDVICalculator,
@@ -16,7 +16,7 @@ import {
   ReflectanceCalculator,
   HillshadeSimulator
 } from './components/Diagrams';
-import { ArrowDown, Menu, X, Globe, Layers, Download, BookOpen, Code, ExternalLink, Copy, FileText, Cpu, Activity, Map as MapIcon, GraduationCap, Briefcase, Wrench, Award, User, Mail, Phone, Play, Clock, Camera, Image as ImageIcon } from 'lucide-react';
+import { ArrowDown, Menu, X, Globe, Layers, Download, BookOpen, Code, ExternalLink, Copy, FileText, Cpu, Activity, Map as MapIcon, GraduationCap, Briefcase, Wrench, Award, User, Mail, Phone, Play, Clock, Camera, Image as ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // --- DATA ---
 
@@ -315,57 +315,133 @@ const IntroductionCard = () => (
   </div>
 );
 
-const InfographicGallery = () => {
+const InfographicGallery = ({ onImageClick }: { onImageClick: (url: string, title: string) => void }) => {
   const infographics = [
     {
       title: "Guía de Inicio: Práctica 1",
       desc: "Fase 1: Preparación del entorno y Fase 2: Conceptos fundamentales.",
-      url: "https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?auto=format&fit=crop&q=80&w=1000",
-      tag: "Conceptos"
+      url: "https://i.postimg.cc/0ydmVfrL/unnamed.png",
+      tag: "Práctica 1"
     },
     {
       title: "Guía Visual: Práctica 2",
       desc: "Adquisición de datos satelitales (Landsat/Modis) y preparación del espacio de trabajo.",
-      url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1000",
-      tag: "Adquisición"
+      url: "https://i.postimg.cc/g2P8y5cf/unnamed-(1).png",
+      tag: "Práctica 2"
     },
     {
-      title: "Manipulación en QGIS: Práctica 3",
+      title: "Manipulación de Datos (Práctica 3)",
       desc: "Guía detallada de herramientas, calculadora de campos y expresiones.",
-      url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000",
-      tag: "Herramientas"
+      url: "https://i.postimg.cc/T3mQfg1C/unnamed-(10).png",
+      tag: "Práctica 3"
     },
     {
       title: "Flujo de Trabajo General",
       desc: "Preparación, Procesamiento, Cálculo de Índices y Clasificación.",
-      url: "https://images.unsplash.com/photo-1542621334-a254cf47733d?auto=format&fit=crop&q=80&w=1000",
+      url: "https://i.postimg.cc/C53DQrGw/unnamed-(2).png",
       tag: "Workflow"
     },
     {
-      title: "Procesamiento Landsat 8 (NDVI)",
+      title: "Práctica 5: Clasificación",
+      desc: "Clasificación No Supervisada vs Supervisada. Algoritmos K-means e ISODATA.",
+      url: "https://i.postimg.cc/fyGXrqc3/unnamed-(3).png",
+      tag: "Práctica 5"
+    },
+    {
+      title: "Análisis de Vegetación (NDVI)",
       desc: "Corrección atmosférica, creación de Stack, recorte y cálculo de NDVI.",
-      url: "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&q=80&w=1000",
-      tag: "Análisis"
+      url: "https://i.postimg.cc/SR2CVbMb/unnamed-(5).png",
+      tag: "NDVI"
+    },
+    {
+      title: "Clasificación Supervisada (Práctica 6)",
+      desc: "Muestreo aleatorio estratificado, creación de mapa temático y evaluación de precisión (Kappa).",
+      url: "https://i.postimg.cc/Xqmc0Y01/unnamed-(6).png",
+      tag: "Práctica 6"
+    },
+    {
+      title: "Kit de Herramientas",
+      desc: "Resumen de modelos de datos, herramientas QGIS y automatización con Python.",
+      url: "https://i.postimg.cc/wMZcdjp8/unnamed-(7).png",
+      tag: "Toolkit"
+    },
+    {
+      title: "Proyecto: Guía Paso a Paso",
+      desc: "Etapas del proyecto de sensores remotos: Preparación, Análisis y Clasificación.",
+      url: "https://i.postimg.cc/pr4YtLtw/unnamed-(8).png",
+      tag: "Proyecto"
+    },
+    {
+      title: "Mindmap: Estructura del Curso",
+      desc: "Mapa mental completo de conceptos, herramientas y evaluaciones de HID-608.",
+      url: "https://i.postimg.cc/mDdy8Spr/unnamed-(9).png",
+      tag: "Resumen"
     }
   ];
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+        const { current } = scrollContainerRef;
+        const scrollAmount = direction === 'left' ? -current.offsetWidth / 1.5 : current.offsetWidth / 1.5;
+        current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      {infographics.map((info, idx) => (
-        <div key={idx} className="group relative overflow-hidden rounded-2xl shadow-lg border border-white/10 cursor-pointer h-80">
-          <img src={info.url} alt={info.title} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-          <div className="absolute top-4 right-4 bg-earth-blue/90 backdrop-blur text-white text-xs px-3 py-1 rounded-full font-bold shadow-sm">
-            {info.tag}
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h4 className="text-xl font-bold text-white mb-2 font-serif">{info.title}</h4>
-            <p className="text-gray-300 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-              {info.desc}
-            </p>
-          </div>
+    <div className="relative group px-4">
+        <button 
+            onClick={() => scroll('left')} 
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-earth-dark/80 hover:bg-earth-dark text-white p-3 rounded-full shadow-xl backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 disabled:opacity-0 hover:scale-110 active:scale-95"
+            aria-label="Anterior"
+        >
+            <ChevronLeft size={24} />
+        </button>
+        
+        <div 
+            ref={scrollContainerRef}
+            className="flex overflow-x-auto gap-6 py-8 px-4 snap-x snap-mandatory scroll-smooth"
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none' 
+            }}
+        >
+            {infographics.map((info, idx) => (
+                <div 
+                    key={idx} 
+                    onClick={() => onImageClick(info.url, info.title)}
+                    className="min-w-[85vw] md:min-w-[400px] flex-shrink-0 snap-center group/card relative overflow-hidden rounded-2xl shadow-lg border border-white/10 cursor-pointer h-[500px] bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                >
+                    <img src={info.url} alt={info.title} className="w-full h-full object-cover opacity-90 group-hover/card:opacity-100 group-hover/card:scale-105 transition-all duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+                    <div className="absolute top-4 right-4 bg-earth-blue/90 backdrop-blur text-white text-xs px-3 py-1 rounded-full font-bold shadow-sm border border-white/10">
+                        {info.tag}
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-2 group-hover/card:translate-y-0 transition-transform duration-300">
+                        <h4 className="text-2xl font-bold text-white mb-3 font-serif leading-tight">{info.title}</h4>
+                        <p className="text-gray-300 text-sm leading-relaxed opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 delay-100">
+                        {info.desc}
+                        </p>
+                    </div>
+                </div>
+            ))}
         </div>
-      ))}
+
+        <button 
+            onClick={() => scroll('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-earth-dark/80 hover:bg-earth-dark text-white p-3 rounded-full shadow-xl backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 active:scale-95"
+            aria-label="Siguiente"
+        >
+            <ChevronRight size={24} />
+        </button>
+        
+        {/* Scroll Indicators/Hint */}
+        <div className="flex justify-center mt-4 gap-2 md:hidden">
+            <div className="w-1.5 h-1.5 rounded-full bg-earth-blue"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+        </div>
     </div>
   );
 };
@@ -398,24 +474,56 @@ const FieldGallery = ({ onImageClick }: { onImageClick: (url: string, title: str
     }
   ];
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const { current } = scrollRef;
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {photos.map((photo, idx) => (
-        <div 
-          key={idx} 
-          onClick={() => onImageClick(photo.url, photo.title || 'Galería')}
-          className="bg-white p-3 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-all cursor-pointer group hover:ring-2 hover:ring-earth-blue/50"
-        >
-          <div className="h-48 overflow-hidden rounded-lg mb-3 relative">
-            <img src={photo.url} alt={photo.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
-              <Camera size={10} /> {photo.date}
+    <div className="relative group px-4">
+      {/* Controls */}
+      <button 
+        onClick={() => scroll('left')} 
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-earth-dark p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 disabled:opacity-0 hover:scale-110 active:scale-95"
+      >
+        <ChevronLeft size={24} />
+      </button>
+      
+      <button 
+        onClick={() => scroll('right')} 
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-earth-dark p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 active:scale-95"
+      >
+        <ChevronRight size={24} />
+      </button>
+
+      {/* Container */}
+      <div 
+        ref={scrollRef}
+        className="flex overflow-x-auto gap-6 py-4 px-2 snap-x snap-mandatory scroll-smooth"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {photos.map((photo, idx) => (
+          <div 
+            key={idx} 
+            onClick={() => onImageClick(photo.url, photo.title || 'Galería')}
+            className="min-w-[280px] md:min-w-[320px] flex-shrink-0 bg-white p-3 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition-all cursor-pointer group/card hover:-translate-y-1 snap-center"
+          >
+            <div className="h-48 overflow-hidden rounded-lg mb-3 relative">
+              <img src={photo.url} alt={photo.title} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+              <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
+                <Camera size={10} /> {photo.date}
+              </div>
             </div>
+            <h4 className="text-sm font-bold text-earth-dark mb-1 line-clamp-1">{photo.title}</h4>
+            <p className="text-[10px] text-gray-500 font-mono line-clamp-2">{photo.subtitle}</p>
           </div>
-          <h4 className="text-sm font-bold text-earth-dark mb-1">{photo.title}</h4>
-          <p className="text-[10px] text-gray-500 font-mono">{photo.subtitle}</p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
@@ -423,32 +531,56 @@ const FieldGallery = ({ onImageClick }: { onImageClick: (url: string, title: str
 const VideoGallery = () => {
   // Placeholder data for videos - User can replace with real YouTube IDs
   const videos = [
-    { title: "Intro a la Teledetección", duration: "15:20", thumb: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=800" },
-    { title: "Descarga de Imágenes (GloVis)", duration: "10:45", thumb: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800" },
-    { title: "Corrección Atmosférica con SCP", duration: "22:10", thumb: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=800" }
+    { 
+      id: "yeGWk2_0pb0",
+      title: "Fundamentos de Teledetección", 
+      url: "https://www.youtube.com/watch?v=yeGWk2_0pb0" 
+    },
+    { 
+      id: "_vvDMJuEmB0",
+      title: "Descarga de Imágenes (GloVis/EarthExplorer)", 
+      url: "https://youtu.be/_vvDMJuEmB0" 
+    },
+    { 
+      id: "6h3dngyDc14",
+      title: "Corrección Atmosférica en QGIS", 
+      url: "https://www.youtube.com/watch?v=6h3dngyDc14" 
+    },
+    { 
+      id: "2LZml5Sgk6E", 
+      title: "Clasificación Supervisada con SCP", 
+      url: "https://www.youtube.com/watch?v=2LZml5Sgk6E" 
+    }
   ];
 
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {videos.map((video, i) => (
-        <div key={i} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group cursor-pointer border border-gray-100">
+        <a 
+          key={i} 
+          href={video.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group cursor-pointer border border-gray-100 flex flex-col h-full hover:-translate-y-1"
+        >
           <div className="relative aspect-video bg-gray-900 overflow-hidden">
-            <img src={video.thumb} alt={video.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+            <img 
+              src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} 
+              alt={video.title} 
+              className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" 
+            />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-earth-blue transition-colors duration-300">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-red-600 transition-colors duration-300 shadow-lg">
                 <Play size={20} className="text-white fill-current ml-1" />
               </div>
             </div>
-            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded flex items-center gap-1">
-              <Clock size={10} /> {video.duration}
-            </div>
           </div>
-          <div className="p-4">
-            <h4 className="font-bold text-earth-dark text-sm group-hover:text-earth-blue transition-colors">{video.title}</h4>
+          <div className="p-4 flex-1">
+            <h4 className="font-bold text-earth-dark text-sm group-hover:text-earth-blue transition-colors line-clamp-2">{video.title}</h4>
             <p className="text-xs text-gray-500 mt-1">Video Tutorial</p>
           </div>
-        </div>
+        </a>
       ))}
     </div>
   );
@@ -1021,14 +1153,14 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Visual Guides and Infographics */}
+        {/* Visual Guides and Infographics (CAROUSEL) */}
         <section className="py-24 bg-earth-dark overflow-hidden relative">
           <div className="container mx-auto px-6 relative z-10">
             <div className="text-center mb-12">
               <h3 className="font-serif text-3xl text-white mb-4">Guías Visuales e Infografías</h3>
-              <p className="text-gray-400">Diagramas de flujo y guías rápidas para las prácticas del curso.</p>
+              <p className="text-gray-400">Diagramas técnicos detallando el flujo de trabajo en QGIS.</p>
             </div>
-            <InfographicGallery />
+            <InfographicGallery onImageClick={(url, title) => setSelectedGalleryImage({url, title})} />
           </div>
         </section>
 

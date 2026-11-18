@@ -9,6 +9,34 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Sphere, Stars, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
+// Add type declarations for React Three Fiber intrinsic elements
+// Augmenting both global and React module JSX namespaces to ensure compatibility
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      group: any;
+      mesh: any;
+      boxGeometry: any;
+      meshStandardMaterial: any;
+      ambientLight: any;
+      pointLight: any;
+    }
+  }
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      group: any;
+      mesh: any;
+      boxGeometry: any;
+      meshStandardMaterial: any;
+      ambientLight: any;
+      pointLight: any;
+    }
+  }
+}
+
 const Satellite = () => {
   const group = useRef<THREE.Group>(null);
   
